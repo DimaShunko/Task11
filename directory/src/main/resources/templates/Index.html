@@ -1,0 +1,124 @@
+<html lang="en" html  xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        td{
+            height:          70px;
+            text-align:      center;
+            font-size:       20px;
+        }
+
+        th{
+            font-size:       20px;
+        }
+
+        table {
+            margin:          auto;
+        }
+
+        hr{
+            width:           600px ;
+            align:           center;
+            color:           black;
+        }
+
+        .clean-label {
+            border:          none;
+            background-color:white;
+            color:           #29abe2;
+            margin-left:     8px;
+            text-decoration: none;
+
+            outline:         none;
+            cursor:          pointer;
+        }
+
+        .clean-label:hover {
+            color:           red;
+        }
+
+        .circle1{
+            background-color:yellow;
+            display:         block;
+            height:          30px;
+            width:           30px;
+            border-radius:   50%;
+            margin:          auto;
+            line-height:     50px;
+        }
+
+        .circle2{
+            background-color:#29abe2;
+            display:         block;
+            height:          30px;
+            width:           30px;
+            border-radius:   50%;
+            margin:          auto;
+            line-height:     50px;
+        }
+
+        .center{
+            padding-top:     15px;
+        }
+    </style>
+
+    <meta charset="UTF-8">
+    <title>Directory</title>
+
+</head>
+<body>
+
+<table>
+    <tr>
+        <td width="60">
+            <form action="/" method="post">
+                <input type="hidden" name="file" th:value="back">
+                <div class="center">
+                    <button type="submit" class="clean-label" style="font-size: 30px;">&lArr;</button>
+                </div>
+            </form>
+        </td>
+
+       <td width="540" th:text="${path}"></td>
+    </tr>
+</table>
+
+<hr>
+
+<table>
+    <tr>
+        <th></th>
+        <th>Имя</th>
+        <th>Дата изменения</th>
+        <th>Тип</th>
+        <th>Размер (байт)</th>
+    </tr>
+
+    <tr th:each="infoaboutfile: ${files}">
+        <td width="60">
+            <span th:if="${infoaboutfile.file.isDirectory}" class="circle1"></span>
+
+            <span th:unless="${infoaboutfile.file.isDirectory}" class="circle2"></span>
+        </td>
+
+        <td width="300" align="left">
+            <span th:if="${infoaboutfile.file.isDirectory}">
+                <form action="/" method="post">
+                    <input type="hidden" name="file" th:value="${infoaboutfile.fileName}">
+                    <div class="center">
+                        <button type="submit" class="clean-label" style="font-size : 20px;"><span th:text="${infoaboutfile.fileName}"></span></button>
+                    </div>
+                </form>
+            </span>
+
+            <span th:unless="${infoaboutfile.file.isDirectory}" th:text="${infoaboutfile.fileName}"></span>
+        </td>
+
+        <td width="80" th:text="${infoaboutfile.dateLastModified}"></td>
+
+        <td width="80" th:text="${infoaboutfile.typeFile}"></td>
+
+        <td width="80" th:text="${infoaboutfile.size}"></td>
+    </tr>
+</table>
+</body>
+</html>
