@@ -1,21 +1,48 @@
 package example;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
 public class Directory {
-
-    private String path = System.getProperty("user.dir");
+    private String path;
     private List<InfoAboutFile> files = new ArrayList<>();
+    private List<InfoAboutDisk> disks = new ArrayList<>();
+    private boolean isDisk;
+
+    public Directory() {
+        this.path = System.getProperty("user.dir");
+        File root = new File(path);
+        File[] list = root.listFiles();
+        if (list != null) {
+            for (File f : list) {
+                this.files.add(new InfoAboutFile(f));
+            }
+        }
+        this.isDisk = false;
+    }
+
+    public Directory(String path) {
+        this.path = path;
+        File root = new File(path);
+        File[] list = root.listFiles();
+        if (list != null) {
+            for (File f : list) {
+                this.files.add(new InfoAboutFile(f));
+            }
+        }
+        this.isDisk = false;
+    }
+
+    public Directory(File[] files) {
+        this.path = "Этот компьютер";
+
+        for (File f : files) {
+            this.disks.add(new InfoAboutDisk(f));
+        }
+
+        this.isDisk = true;
+    }
 
     public String getPath() {
         return path;
@@ -33,25 +60,19 @@ public class Directory {
         this.files = files;
     }
 
-    @GetMapping("/")
-    public String getDirectory(Model model) {
-        model.addAttribute("path", getPath());
-        setFiles(App.addFile(path));
-        model.addAttribute("files", getFiles());
-        return "index";
+    public boolean isDisk() {
+        return isDisk;
     }
 
-    @PostMapping("/")
-    public String postDirectory(@RequestParam String file) {
-        if (file.equals("back")) {
-            String newPath = String.valueOf(Paths.get(path).getParent());
-            if (!newPath.equals("null")) {
-                setPath(newPath);
-            }
-        } else {
-            setPath(path + File.separator + file);
-        }
-        return "redirect:/";
+    public void setDisk(boolean disk) {
+        isDisk = disk;
     }
 
+    public List<InfoAboutDisk> getDisks() {
+        return disks;
+    }
+
+    public void setDisks(List<InfoAboutDisk> disks) {
+        this.disks = disks;
+    }
 }

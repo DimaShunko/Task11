@@ -2,8 +2,7 @@
 <head>
     <style>
         td{
-            height:          70px;
-            text-align:      center;
+            height:          30px;
             font-size:       20px;
         }
 
@@ -21,18 +20,13 @@
             color:           black;
         }
 
-        .clean-label {
+        button {
+            background:      none;
             border:          none;
-            background-color:white;
-            color:           #29abe2;
-            margin-left:     8px;
-            text-decoration: none;
-
-            outline:         none;
+            padding:         0px ;
             cursor:          pointer;
         }
-
-        .clean-label:hover {
+        button:hover {
             color:           red;
         }
 
@@ -56,9 +50,24 @@
             line-height:     50px;
         }
 
-        .center{
-            padding-top:     15px;
+        .circle3{
+            background-color:blue;
+            display:         block;
+            height:          30px;
+            width:           30px;
+            border-radius:   50%;
+            margin:          auto;
+            line-height:     50px;
         }
+
+        .table-container {
+            height:          530px;
+            width:           800px;
+            overflow-y:      scroll;
+            margin:          auto;
+            display:         block;
+        }
+
     </style>
 
     <meta charset="UTF-8">
@@ -70,55 +79,75 @@
 <table>
     <tr>
         <td width="60">
-            <form action="/" method="post">
-                <input type="hidden" name="file" th:value="back">
-                <div class="center">
-                    <button type="submit" class="clean-label" style="font-size: 30px;">&lArr;</button>
-                </div>
+            <form action="/back" method="post">
+                <input type="hidden" name="path" th:value="${directory.path}">
+
+                <button type="submit" style="font-size: 30px; margin-top: 20px">&lArr;</button>
             </form>
         </td>
 
-       <td width="540" th:text="${path}"></td>
+       <td align="left" width="510" th:text="${directory.path}"></td>
     </tr>
 </table>
 
 <hr>
 
+
 <table>
     <tr>
-        <th></th>
-        <th>Имя</th>
-        <th>Дата изменения</th>
-        <th>Тип</th>
-        <th>Размер (байт)</th>
+        <th width="60"></th>
+        <th width="280">Имя</th>
+        <th width="100">Дата изменения</th>
+        <th width="70">Тип</th>
+        <th width="70">Размер (байт)</th>
+        <th width="10"></th>
     </tr>
+</table>
 
-    <tr th:each="infoaboutfile: ${files}">
+<div class="table-container">
+<table border="1">
+    <tr th:unless="${directory.isDisk}" th:each="file: ${directory.files}">
         <td width="60">
-            <span th:if="${infoaboutfile.file.isDirectory}" class="circle1"></span>
+            <span th:if="${file.isDirectory}" class="circle1"></span>
 
-            <span th:unless="${infoaboutfile.file.isDirectory}" class="circle2"></span>
+            <span th:unless="${file.isDirectory}" class="circle2"></span>
         </td>
 
-        <td width="300" align="left">
-            <span th:if="${infoaboutfile.file.isDirectory}">
-                <form action="/" method="post">
-                    <input type="hidden" name="file" th:value="${infoaboutfile.fileName}">
-                    <div class="center">
-                        <button type="submit" class="clean-label" style="font-size : 20px;"><span th:text="${infoaboutfile.fileName}"></span></button>
-                    </div>
+        <td width="280" align="left" style="text-align: center;">
+            <span th:if="${file.isDirectory}">
+                <form action="/next" method="post">
+                    <input type="hidden" name="file" th:value="${file.fileName}">
+                    <input type="hidden" name="path" th:value="${directory.path}">
+
+                    <button type="submit"  style="font-size : 20px;"><span th:text="${file.fileName}"></span></button>
                 </form>
             </span>
 
-            <span th:unless="${infoaboutfile.file.isDirectory}" th:text="${infoaboutfile.fileName}"></span>
+            <span th:unless="${file.isDirectory}" th:text="${file.fileName}"></span>
         </td>
 
-        <td width="80" th:text="${infoaboutfile.dateLastModified}"></td>
+        <td width="100" style="text-align: center;" th:text="${file.dateLastModified}"></td>
 
-        <td width="80" th:text="${infoaboutfile.typeFile}"></td>
+        <td width="70" style="text-align: center;" th:text="${file.typeFile}"></td>
 
-        <td width="80" th:text="${infoaboutfile.size}"></td>
+        <td width="70" style="text-align: center;" th:text="${file.size}"></td>
+    </tr>
+
+    <tr th:if="${directory.isDisk}" th:each="disk: ${directory.disks}">
+        <td width="60">
+            <span class="circle3"></span>
+        </td>
+
+        <td width="530" align="left">
+            <form action="/next" method="post">
+                <input type="hidden" name="file" th:value="${disk.diskName}">
+                <input type="hidden" name="path" th:value="${directory.path}">
+
+                <button type="submit"  style="font-size : 20px;"><span th:text="${disk.diskName}"></span></button>
+            </form>
+        </td>
     </tr>
 </table>
+</div>
 </body>
 </html>

@@ -2,31 +2,34 @@ package example;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class InfoAboutFile {
 
-    private File file;
     private String fileName;
     private String dateLastModified;
     private String typeFile;
     private String size;
+    private boolean isDirectory;
 
-    public InfoAboutFile(File file, String fileName, String dateLastModified, String typeFile, String size) {
-        this.file = file;
-        this.fileName = fileName;
-        this.dateLastModified = dateLastModified;
-        this.typeFile = typeFile;
-        this.size = size;
-    }
+    public InfoAboutFile(File file) {
+        this.fileName = file.getName();
 
-    public File getFile() {
-        return file;
-    }
+        this.dateLastModified = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date(file.lastModified()));
 
-    public void setFile(File file) {
-        this.file = file;
+        if (file.isDirectory()) {
+            this.typeFile = "Папка";
+            this.size = "";
+        } else {
+            this.typeFile = "Файл";
+            this.size = String.valueOf(file.length());
+        }
+
+        this.isDirectory = file.isDirectory();
+
     }
 
     public String getFileName() {
@@ -59,5 +62,13 @@ public class InfoAboutFile {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    public boolean isDirectory() {
+        return isDirectory;
+    }
+
+    public void setDirectory(boolean directory) {
+        isDirectory = directory;
     }
 }
